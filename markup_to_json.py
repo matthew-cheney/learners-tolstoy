@@ -54,7 +54,8 @@ for chapter_number, chapter in enumerate(chapter_list):
                 word_dict['feats'] = word.feats
                 words[f'{word_counter:04d}'] = word_dict
                 word_counter += 1
-        paragraphs[f'{paragraph_index:04d}'] = words
+        paragraphs[f'{paragraph_index:04d}'] = dict()
+        paragraphs[f'{paragraph_index:04d}']['words'] = words
     chapter_dict = dict()
     chapter_dict['paragraphs'] = paragraphs
     chapter_dict['title'] = chapter.find('h3', {'class': 'chapter_title'}).text
