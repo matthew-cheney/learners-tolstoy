@@ -29,7 +29,9 @@ def json_to_book(json_text):
                     # TO DO - Check if this is footnote for previous word
                     if word['text'].startswith('FOOTNOTE_ID'):
                         words[len(words) - 1].has_footnote = True
-                        words[len(words) - 1].footnote_id = word['text'][9:]
+                        words[len(words) - 1].footnote_id = word['text'][12:]
+                        words[len(words) - 1].footnote =\
+                            json_dict['footnotes'][word['text'][12:]]
                         continue
                     # Not a footnote, add new word
                     new_word = Word(text=word['text'], lemma=word['lemma'],
@@ -45,7 +47,6 @@ def json_to_book(json_text):
         raise json.decoder.JSONDecodeError("json_text must be valid json")
     except IndexError:
         raise ValueError("most likely invalid parameter json_text")
-    return json_dict
 
 with open('../cleaned_pickles/ivan_ilyich_book.json', 'r') as f:
     raw_text = f.read()
