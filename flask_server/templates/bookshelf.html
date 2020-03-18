@@ -2,12 +2,20 @@
 
 {% block content %}
 
+<h1>Instructions</h1>
+<h3>Click into the book and chapter you want to read.</h3>
+<h3>Within each chapter, you can click on any word to see its translation. The translation will appear at the top.</h3>
+<h3>Footnotes are indicated by an asterisk (*). These typically contain translations from French into Russian. Clicking on the * will bring up another window with the footnote. Within this window, you can also click on words to see their translation. To close this window, simply click back on the main text.</h3>
+<h3>For bug reporting or feedback, contact Matthew at matthew@cheneycreations.com</h3>
+
+
 <h1>Bookshelf</h1>
 
 {% for book in all_books %}
 <h2><a href="book/{{ book[2] }}">{{ book[0] }}</a></h2>
 <h3>by {{ book[1] }}</h3>
 <hr/>
+
 {% endfor %}
 
 {% endblock content %}

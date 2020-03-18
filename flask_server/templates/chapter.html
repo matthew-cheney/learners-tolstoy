@@ -15,20 +15,29 @@
 </div>
 <h1>{{ book.title }}</h1>
 
+<h2>{{ chapter.title }}</h2>
+
 {% for paragraph in chapter.paragraphs %}
 <p>
-    {% for word in paragraph.words %}{% if word.pos != 'PUNCT'%} {% endif %}<span id="{{ word.id }}" class="word" onclick='set_translation("{{ word.lemma }}","{{ word.translation }}", "{{ word.id }}")'>{{ word.text }}</span>{% if word.footnote_id != None %}<sup onclick="show_fd('fd_{{ word.id }}')">o</sup>{% endif %}{% endfor %}
+    {% for word in paragraph.words %}{% if word.pos != 'PUNCT'%} {% endif %}<span id="{{ word.id }}" {% if word.pos != 'PUNCT' %} class="word" onclick='set_translation("{{ word.lemma }}","{{ word.translation }}", "{{ word.id }}")'{% endif %}>{{ word.text }}</span>{% if word.footnote_id != None %}<sup onclick="show_fd('fd_{{ word.id }}')" style="cursor: pointer;">*</sup>{% endif %}{% endfor %}
 </p>
 {% endfor %}
 {% for paragraph in chapter.paragraphs %}
     {% for word in paragraph.words %}
-    {% if word.footnote_id != None %}<div class="modal" id="fd_{{ word.id }}"><div class="modal-content">{{ word.footnote }}<br/><span onclick="close_fd('fd_{{ word.id }}')">close</span></div></div>{% endif %}
+    {% if word.footnote_id != None %}<div class="modal" id="fd_{{ word.id }}">
+    <div class="modal-content">
+        <div id="ft_div_{{ word.id }}">
+            translations will appear here
+        </div>
+        <hr/>
+        {% for ft_word in word.footnote %}{% if ft_word.pos != 'PUNCT'%} {% endif %}<span id="{{ ft_word.id }}" {% if ft_word.pos != 'PUNCT' %} class="word" onclick='set_ft_translation("{{ ft_word.lemma }}","{{ ft_word.translation }}", "{{ ft_word.id }}", "ft_div_{{ word.id }}")'{% endif %}>{{ ft_word.text }}</span>{% if ft_word.footnote_id != None %}<sup onclick="show_fd('fd_{{ ft_word.id }}')">o</sup>{% endif %}{% endfor %}<br/></div></div>{% endif %}
     {% endfor %}
 {% endfor %}
 </div>
 <script>
 
     var current_highlight_word = 0;
+    var ft_current_highlight_word = 0;
 
     function set_translation(word, translation, new_highlight_word) {
         translation_div = document.getElementById('definition_span');
@@ -38,6 +47,16 @@
         }
         current_highlight_word = new_highlight_word;
         document.getElementById(new_highlight_word).style.color = "blue";
+    }
+
+    function set_ft_translation(word, translation, new_highlight_word, trans_div) {
+        translation_div = document.getElementById(trans_div);
+        translation_div.innerHTML = '<strong>' + word + ':</strong> ' + translation;
+        if (ft_current_highlight_word != 0) {
+            document.getElementById(ft_current_highlight_word).style.color = "black";
+        }
+        ft_current_highlight_word = new_highlight_word;
+        document.getElementById(new_highlight_word).style.color = "red";
     }
 
     var font_size = 30;

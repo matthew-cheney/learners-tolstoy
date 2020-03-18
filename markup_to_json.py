@@ -33,14 +33,30 @@ link_divs = links_wrapper.findAll('div', {'class': 'link'})
 # keys: id (str); values: <p>Transl. (bs4 Tag)
 footnotes = dict()
 for link in link_divs:
-    footnotes[link.get('id')] = link.find('p').text
+    f_doc = nlp(link.find('p').text)
+    f_words = {}
+    word_counter = 0
+    for sentence_index, sentence in enumerate(f_doc.sentences):
+        for word_index, word in enumerate(sentence.words):
+            word_dict = dict()
+            word_dict['text'] = word.text
+            word_dict['lemma'] = word.lemma
+            word_dict['pos'] = word.upos
+            word_dict['feats'] = word.feats
+            word_dict['footnote'] = None
+            word_dict['footnote_id'] = None
+            word_dict['frequency'] = float('infinity')
+            word_dict['translation'] = None
+            f_words[f'{word_counter:04d}'] = word_dict
+            word_counter += 1
+    footnotes[link.get('id')] = dict()
+    footnotes[link.get('id')]['words'] = f_words
 
 # Build each Chapter model
 chapters = {}
 for chapter_number, chapter in enumerate(chapter_list):
     paragraphs = {}
     for paragraph_index, paragraph in enumerate(chapter.findAll('p')):
-        # TO DO - change to CoreNLP word tokenizing
         raw_paragraph_text = paragraph.text
         words = {}
         doc = nlp(paragraph.text)

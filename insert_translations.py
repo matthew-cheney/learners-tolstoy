@@ -23,9 +23,9 @@ class TranslationInserter:
     def insert_translations(self, json_filename):
         with open(json_filename, 'r') as f:
             raw_text = f.read()
-        book = json_to_book(raw_text)
+        book = json_to_book_footnotes_separate(raw_text)
 
-        # Add in frequencies and translation if high enough
+        # Add in frequencies and translation
 
         for ch_num, chapter in enumerate(book.chapters):
             for p_num, paragraph in enumerate(chapter.paragraphs):
@@ -35,6 +35,11 @@ class TranslationInserter:
                     translation, abbyy_type = self.Translator.get_translation(word.lemma)
                     word.translation = translation
                     word.frequency = self.get_word_frequency(word.lemma)
+                    if word.footnote != None:
+                        for ft_word in word.footnote:
+                            translation, abbyy_type = self.Translator.get_translation(ft_word.lemma)
+                            ft_word.translation = translation
+                            ft_word.frequency = self.get_word_frequency(ft_word.lemma)
 
         new_book_json = book_to_json(book)
         print('writing new book with translations to file')
