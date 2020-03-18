@@ -38,6 +38,7 @@ def _get_book_from_db(book_id):
         return f'no book found with id {book_id}'
     try:
         book = json_to_book(book_json)
+        book.id = book_id
         return book
     except (TypeError, JSONDecodeError):
         return 'something went wrong'
