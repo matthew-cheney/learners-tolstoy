@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 import json
 import sys
 import os
 import time
 
+=======
+import sys
+import os
+>>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
 import requests
 import sqlite3
 import datetime
@@ -10,16 +15,22 @@ import datetime
 from Abbyy_Translator.Exceptions import *
 
 
+<<<<<<< HEAD
 ABBYY_CHAR_LIMIT = 50000
 
 class Translator:
     def __init__(self, api_key):
         self.limit_reached = False
+=======
+class Translator:
+    def __init__(self, api_key):
+>>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
         # Set up the api key
         self.api_key = api_key
         self.srcD = 1049  # Russian
         self.dstD = 1033  # English
 
+<<<<<<< HEAD
         # Set up character tracker
 
         self._read_char_tracker()
@@ -28,12 +39,17 @@ class Translator:
 
         # Set up the volatile key
         self.volatile_filename = 'Abbyy_Translator/volatile_key.txt'
+=======
+        # Set up the volatile key
+        self.volatile_filename = 'volatile_key.txt'
+>>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
         try:
             self.volatile_key = self._load_volatile_key()
         except FileNotFoundError:
             self.volatile_key = self._get_new_volatile_key()
 
         # Set up the database
+<<<<<<< HEAD
         self.db_filename = 'Abbyy_Translator/saved_translations_mini.db'
         if not os.path.exists(self.db_filename):
             raise DBNotFoundException(f'saved_translations db not found. Create db at {self.db_filename}')
@@ -57,6 +73,14 @@ class Translator:
             with open('character_tracker.txt', 'w') as f:
                 print(datetime.datetime.now().date().__str__(), self.char_counter, sep='\n', file=f)
 
+=======
+        self.db_filename = 'saved_translations.db'
+        if not os.path.exists(self.db_filename):
+            raise DBNotFoundException('saved_translations db not found. Create db at saved_translations.db')
+        self.conn = sqlite3.connect('saved_translations.db')
+        self.c = self.conn.cursor()
+
+>>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
     def _load_volatile_key(self):
         if not os.path.exists(self.volatile_filename):
             raise FileNotFoundError(self.volatile_filename)
@@ -65,7 +89,11 @@ class Translator:
         return volatile_key
 
     def _get_new_volatile_key(self):
+<<<<<<< HEAD
         data = {'Authorization': f'Basic '}
+=======
+        data = {'Authorization': f'Basic {self.api_key}'}
+>>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
         r = requests.post(
             url='https://developers.lingvolive.com/api/v1.1/authenticate',
             headers=data)
@@ -74,6 +102,7 @@ class Translator:
         return self._load_volatile_key()
 
     def get_translation(self, word):
+<<<<<<< HEAD
         res = self._retrieve_translation(word)
         translation, type = self.parse_result_mini(res, word)
         return translation, type
@@ -93,6 +122,16 @@ class Translator:
                 return json.loads(result[0].decode("utf-8"))
             except AttributeError:
                 return json.loads(result[0])
+=======
+        result = self._get_word_from_database(word)
+        if result is None:
+            # Not in db yet, query Abbyy api
+            print("querying Abbyy api")
+            result = self._query_abbyy(word)
+        else:
+            # word already in db
+            return result[0]
+>>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
 
     def _write_translation_to_db(self, word: str, abbyy_result: str):
         # Check if word already in db
@@ -117,6 +156,7 @@ class Translator:
     def _query_abbyy(self, word):
         # Query abbyy
         headers = {'Authorization': f'Bearer {self.volatile_key}'}
+<<<<<<< HEAD
         url = f'https://developers.lingvolive.com/api/v1/Minicard?text={word}&srcLang={self.srcD}&dstLang={self.dstD}'
         self.char_counter += len(word)
         self._write_char_tracker()
@@ -160,11 +200,23 @@ class Translator:
                     time.sleep(1)
                 self.limit_reached = True
                 return self._query_abbyy(word)
+=======
+        url = f'https://developers.lingvolive.com/api/v1/Translation?text={word}&srcLang={self.srcD}&dstLang={self.dstD}'
+        r = requests.get(url=url, headers=headers)
+
+        # Check if volatile key was good
+        if r.status_code == 200:
+            # Volatile key good - write to db and return
+            self._write_translation_to_db(word, r.content)
+            return r.content
+        else:
+>>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
             # Volatile key was bad
             # Get new volatile key
             self._get_new_volatile_key()
             # Query again
             return self._query_abbyy(word)
+<<<<<<< HEAD
 
     def parse_result_mini(self, res, word):
         words = ''
@@ -241,3 +293,5 @@ for russ_word in russ_words:
           f'type: {type}\n'
           # f'comments: {comments}'
           )"""
+=======
+>>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
