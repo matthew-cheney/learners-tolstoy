@@ -1,0 +1,27 @@
+Parsing through JSON results from Abbyy:
+
+Tentative method:
+Follow each step, continue down on any key error, etc.
+
+Find entry with Dictionary: LingvoUniversal (Ru-En)
+Open body
+
+Open element with Type: 3
+Open items
+In each item:
+   Markup
+   Node: Paragraph
+   Markup
+   Node: Text
+   Translation is in Text: trans.
+
+OR
+
+Open element with Type: 1
+Open items
+In each item:
+   Markup
+   Find ones with Node: Paragraph
+     Markup
+       Then Node: Text
+       Maybe IsItalics false?

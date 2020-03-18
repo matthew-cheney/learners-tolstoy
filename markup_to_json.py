@@ -33,7 +33,7 @@ link_divs = links_wrapper.findAll('div', {'class': 'link'})
 # keys: id (str); values: <p>Transl. (bs4 Tag)
 footnotes = dict()
 for link in link_divs:
-    footnotes[link.get('id')] = link.find('p')
+    footnotes[link.get('id')] = link.find('p').text
 
 # Build each Chapter model
 chapters = {}
@@ -52,6 +52,10 @@ for chapter_number, chapter in enumerate(chapter_list):
                 word_dict['lemma'] = word.lemma
                 word_dict['pos'] = word.upos
                 word_dict['feats'] = word.feats
+                word_dict['footnote'] = None
+                word_dict['footnote_id'] = None
+                word_dict['frequency'] = float('infinity')
+                word_dict['translation'] = None
                 words[f'{word_counter:04d}'] = word_dict
                 word_counter += 1
         paragraphs[f'{paragraph_index:04d}'] = dict()
@@ -69,6 +73,9 @@ book_dict = dict()
 book_dict['title'] = title_header.text
 book_dict['author'] = AUTHOR
 book_dict['chapters'] = chapters
+
+# Add in footnotes (at end of json, not integrated with words)
+book_dict['footnotes'] = footnotes
 
 json_dict = json.dumps(book_dict, ensure_ascii=False).encode('utf-8')
 

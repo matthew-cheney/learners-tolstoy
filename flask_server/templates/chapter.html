@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div id="chapter_div">
+<div style="height: 100%;">
+<div id="definition_div">
+hey
+</div>
+</div>
+<h1>{{ book.title }}</h1>
+
+{% for paragraph in chapter.paragraphs %}
+<p>
+    {% for word in paragraph.words %}{% if word.pos != 'PUNCT'%} {% endif %}<span id="{{ word.id }}" class="word" onclick='set_translation("{{ word.lemma }}","{{ word.translation }}", "{{ word.id }}")'>{{ word.text }}</span>{% endfor %}
+</p>
+{% endfor %}
+</div>
+<script>
+
+    var current_highlight_word = 0;
+
+    function set_translation(word, translation, new_highlight_word) {
+        translation_div = document.getElementById('definition_div');
+        translation_div.innerHTML = '<strong>' + word + ':</strong> ' + translation;
+        if (current_highlight_word != 0) {
+            document.getElementById(current_highlight_word).style.color = "black";
+        }
+        current_highlight_word = new_highlight_word;
+        document.getElementById(new_highlight_word).style.color = "blue";
+    }
+
+
+</script>
+
+{% endblock content %}
