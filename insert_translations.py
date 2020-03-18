@@ -7,7 +7,7 @@ class TranslationInserter:
     def __init__(self, word_freq_list_filepath=None):
         if word_freq_list_filepath is None:
             word_freq_list_filepath = 'word_lists/masterrussian_1000_words_cleaned.csv'
-        self.Translator = Translator('Njc4ZmFjZDYtN2VhZC00OTk4LWE3NjItMzhjOGY3MmRhYjNhOmVjNjk3YTMwMjM5NDQ2MjdiM2JmYzU2N2VhNDlhZjBm')
+        self.Translator = Translator('')
         with open(word_freq_list_filepath, 'r') as f:
             raw_text = f.read()
         self.word_freq_list = dict()

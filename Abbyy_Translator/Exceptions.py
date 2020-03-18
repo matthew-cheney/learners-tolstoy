@@ -40,7 +40,6 @@ class WordNotFoundInDatabaseException(Exception):
             return f'WordNotFoundInDatabaseException, {self.message}'
         else:
             return 'WordNotFoundInDatabaseException has been raised'
-<<<<<<< HEAD
 
 class AbbyyCharLimitReachedException(Exception):
     def __init__(self, *args):
@@ -55,5 +54,3 @@ class AbbyyCharLimitReachedException(Exception):
             return f'AbbyyCharLimitReachedException, {self.message}'
         else:
             return 'AbbyyCharLimitReachedException has been raised. Likely solution - wait until next calendar day and retry.'
-=======
->>>>>>> e23d614764b64a9738df9d6fd7b2df6edf94341f
