@@ -1,4 +1,5 @@
 import json
+import re
 
 from bs4 import BeautifulSoup
 import pickle
@@ -9,11 +10,16 @@ from models.Chapter import Chapter
 from models.Paragraph import Paragraph
 from models.Word import Word
 
-AUTHOR = 'Tolstoy'
+import warnings
+
+warnings.filterwarnings("ignore")
+
+AUTHOR = 'Leo Tolstoy'
+BOOK_FILENAME = 'ivan_ilyich'
 
 nlp = stanfordnlp.Pipeline(lang='ru')
 
-with open('tolstoy_ru/cleaned_markup/ivan_ilyich.txt', 'r') as f:
+with open(f'tolstoy_ru/cleaned_markup/{BOOK_FILENAME}.txt', 'r') as f:
     raw_text = f.read()
 
 soup = BeautifulSoup(raw_text, 'html.parser')
@@ -32,6 +38,7 @@ link_divs = links_wrapper.findAll('div', {'class': 'link'})
 # Put footnotes into dictionary
 # keys: id (str); values: <p>Transl. (bs4 Tag)
 footnotes = dict()
+print('parsing links/footnotes')
 for link in link_divs:
     f_doc = nlp(link.find('p').text)
     f_words = {}
@@ -55,25 +62,55 @@ for link in link_divs:
 # Build each Chapter model
 chapters = {}
 for chapter_number, chapter in enumerate(chapter_list):
+    print(f'\nstarting to parse chapter {chapter_number+1} / {len(chapter_list)}')
     paragraphs = {}
+    paragraph_list = chapter.findAll('p')
     for paragraph_index, paragraph in enumerate(chapter.findAll('p')):
         raw_paragraph_text = paragraph.text
         words = {}
-        doc = nlp(paragraph.text)
+        paragraph_footnotes = re.findall('(.*)\s*(FOOTNOTE_ID_....)', raw_paragraph_text)
+        text_without_footnotes = raw_paragraph_text
+        for each in paragraph_footnotes:
+            text_without_footnotes = text_without_footnotes.replace(each[1], '')
+        for i in range(len(paragraph_footnotes)):
+            paragraph_footnotes[i] = (paragraph_footnotes[i][0].replace(' ', ''), paragraph_footnotes[i][1])
+        doc = nlp(text_without_footnotes)
         word_counter = 0
+        text_so_far = ''
+        footnote_counter = 0
         for sentence_index, sentence in enumerate(doc.sentences):
             for word_index, word in enumerate(sentence.words):
-                word_dict = dict()
-                word_dict['text'] = word.text
-                word_dict['lemma'] = word.lemma
-                word_dict['pos'] = word.upos
-                word_dict['feats'] = word.feats
-                word_dict['footnote'] = None
-                word_dict['footnote_id'] = None
-                word_dict['frequency'] = float('infinity')
-                word_dict['translation'] = None
-                words[f'{word_counter:04d}'] = word_dict
-                word_counter += 1
+                try:
+                    footnote_found = paragraph_footnotes[footnote_counter][0] == text_so_far
+                except IndexError:
+                    footnote_found = False
+                if footnote_found:
+                    word_dict = dict()
+                    word_dict['text'] = paragraph_footnotes[footnote_counter][1]
+                    word_dict['lemma'] = paragraph_footnotes[footnote_counter][1]
+                    word_dict['pos'] = 'footnote'
+                    word_dict['feats'] = 'footnote'
+                    word_dict['footnote'] = None
+                    word_dict['footnote_id'] = None
+                    word_dict['frequency'] = float('infinity')
+                    word_dict['translation'] = None
+                    words[f'{word_counter:04d}'] = word_dict
+                    word_counter += 1
+                    text_so_far += paragraph_footnotes[footnote_counter][0]
+                    footnote_counter += 1
+                else:
+                    word_dict = dict()
+                    word_dict['text'] = word.text
+                    word_dict['lemma'] = word.lemma
+                    word_dict['pos'] = word.upos
+                    word_dict['feats'] = word.feats
+                    word_dict['footnote'] = None
+                    word_dict['footnote_id'] = None
+                    word_dict['frequency'] = float('infinity')
+                    word_dict['translation'] = None
+                    words[f'{word_counter:04d}'] = word_dict
+                    word_counter += 1
+                    text_so_far += word.text
         paragraphs[f'{paragraph_index:04d}'] = dict()
         paragraphs[f'{paragraph_index:04d}']['words'] = words
     chapter_dict = dict()
@@ -95,5 +132,5 @@ book_dict['footnotes'] = footnotes
 
 json_dict = json.dumps(book_dict, ensure_ascii=False).encode('utf-8')
 
-with open('cleaned_pickles/ivan_ilyich_book.json', 'wb') as f:
+with open(f'cleaned_pickles/{BOOK_FILENAME}_book.json', 'wb') as f:
     f.write(json_dict)

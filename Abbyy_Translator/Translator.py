@@ -65,7 +65,7 @@ class Translator:
         return volatile_key
 
     def _get_new_volatile_key(self):
-        data = {'Authorization': f'Basic '}
+        data = {'Authorization': f'Basic {self.api_key}'}
         r = requests.post(
             url='https://developers.lingvolive.com/api/v1.1/authenticate',
             headers=data)
@@ -79,6 +79,8 @@ class Translator:
         return translation, type
 
     def _retrieve_translation(self, word):
+        if word is None:
+            return dict()
         result = self._get_word_from_database(word)
         if result is None:
             # Not in db yet, query Abbyy api
@@ -138,6 +140,12 @@ class Translator:
             mock_content = f'{{"SourceLanguage":1049,"TargetLanguage":1033,"Heading":"{word}","Translation":{{"Heading":"{word}","Translation":"NO TRANSLATION FOUND","DictionaryName":"LingvoUniversal (Ru-En)","SoundName":"None","Type":0,"OriginalWord":""}},"SeeAlso":[]}}'
             self._write_translation_to_db(word, mock_content)
             return mock_content
+        elif r.status_code == 401:
+            # Volatile key was bad
+            # Get new volatile key
+            self._get_new_volatile_key()
+            # Query again
+            return self._query_abbyy(word)
         else:
             print(self._429s)
             self._429s.append(0)
@@ -160,11 +168,7 @@ class Translator:
                     time.sleep(1)
                 self.limit_reached = True
                 return self._query_abbyy(word)
-            # Volatile key was bad
-            # Get new volatile key
-            self._get_new_volatile_key()
-            # Query again
-            return self._query_abbyy(word)
+
 
     def parse_result_mini(self, res, word):
         words = ''

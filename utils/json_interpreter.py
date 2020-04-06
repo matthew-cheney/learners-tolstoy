@@ -27,7 +27,7 @@ def json_to_book_footnotes_separate(json_text):
                 words = list()
                 for word in paragraph['words'].values():
                     # TO DO - Check if this is footnote for previous word
-                    if word['text'].startswith('FOOTNOTE_ID'):
+                    if word['text'].startswith('FOOTNOTE_ID_'):
                         words[len(words) - 1].has_footnote = True
                         words[len(words) - 1].footnote_id = word['text'][12:]
                         f_words = list()
