@@ -1,0 +1,2 @@
+cat tom_sawyer.txt | python3 process.py | ../kenlm/build/bin/lmplz -o 3 -S 50% > english_mini.arpa
+../kenlm/build/bin/build_binary -s english_mini.arpa english_mini.mmap
