@@ -36,7 +36,7 @@ class TranslationInserter:
         total_p = len(raw_text.split('\n'))
 
         for p_num, paragraph in enumerate(raw_text.split('\n')):
-            if p_num < 5400:
+            if p_num < 6130:
                 continue
             if len(paragraph) == 0 or paragraph is None or paragraph == ' ' or paragraph == '  ':
                 continue

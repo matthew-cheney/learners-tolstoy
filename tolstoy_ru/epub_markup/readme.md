@@ -1,0 +1,1 @@
+This directory will contain the markup representation of epub files in the epubs directory

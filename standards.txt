@@ -1,0 +1,26 @@
+<div class="title">
+    <div class="title_piece">
+        <h2>СМЕРТЬ ИВАНА ИЛЬИЧА.</h2>
+    </div>
+</div>
+
+<div class="text">
+    <div class="chapter">
+        <h3 class="chapter_title">I.</h3>
+          <p>В большом здании судебных учреждений во время перерыва....</p>
+          <p>....</p>
+    </div>
+    <div class="chapter">
+        <h3>I.</h3>
+          <p>....Иван Ильич был le phenix de la famille, FOOTNOTE_ID_0001 как говорили.....</p>
+    </div>
+</div>
+
+<div class="links">
+    <div class="link" id="0001">
+      <p>[Гордость семьи.]</p>
+    </div>
+    <div class="link" id="0002">
+      <p>....</p>
+    </div>
+</div>

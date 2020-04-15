@@ -159,7 +159,7 @@ def book_to_json(book: Book):
     book_dict['chapters'] = chapters
     return dict_to_json(book_dict)
 
-"""with open('../cleaned_pickles/ivan_ilyich_book_with_translations.json', 'r') as f:
+"""with open('../cleaned_json/ivan_ilyich_book_with_translations.json', 'r') as f:
     raw_text = f.read()
 book = json_to_book(raw_text)
 x = 0
