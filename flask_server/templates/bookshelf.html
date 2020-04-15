@@ -14,6 +14,7 @@
 {% for book in all_books %}
 <h2><a href="book/{{ book[2] }}">{{ book[0] }}</a></h2>
 <h3>by {{ book[1] }}</h3>
+<h3>Difficulty (0 - easy, 100 - hard): {{ book[3] }}</h3>
 <hr/>
 
 {% endfor %}

@@ -26,7 +26,7 @@ def get_book_json(db_filename, book_id):
 def get_all_books(db_filename):
     conn = sqlite3.connect(db_filename)
     c = conn.cursor()
-    c.execute("SELECT title, author, id FROM books")
+    c.execute("SELECT title, author, id, difficulty FROM books")
     db_result = c.fetchall()
     conn.close()
     if db_result is None:

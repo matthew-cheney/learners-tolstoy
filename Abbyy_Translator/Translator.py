@@ -143,7 +143,7 @@ class Translator:
         elif r.status_code == 401:
             # Volatile key was bad
             # Get new volatile key
-            self._get_new_volatile_key()
+            self.volatile_key = self._get_new_volatile_key()
             # Query again
             return self._query_abbyy(word)
         else:

@@ -1,4 +1,5 @@
 import stanfordnlp
+import re
 
 from utils.json_interpreter import *
 from Abbyy_Translator.Translator import *
@@ -35,7 +36,7 @@ class TranslationInserter:
         total_p = len(raw_text.split('\n'))
 
         for p_num, paragraph in enumerate(raw_text.split('\n')):
-            if p_num < 15170:
+            if p_num < 5400:
                 continue
             if len(paragraph) == 0 or paragraph is None or paragraph == ' ' or paragraph == '  ':
                 continue
@@ -46,7 +47,11 @@ class TranslationInserter:
                     print(f'processing {word.lemma}\n'
                           f'p: {p_num} / {total_p}; word: {word_count}')
                     word_count += 1
-                    self.Translator.get_translation(word.lemma)
+                    if len(re.findall(r'[а-яА-Я]', word.lemma)) == 0:
+                        translation, abbyy_type = "not Russian", "foreign"
+                        print(f'skipping {word.lemma} - not Russian')
+                    else:
+                        self.Translator.get_translation(word.lemma)
 
     def get_word_frequency(self, word):
         try:
@@ -58,6 +63,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-BOOK_FILENAME = 'anna_karenina_rough.txt'
+BOOK_FILENAME = 'war_and_peace_rough.txt'
 ti = TranslationInserter()
 ti.insert_translations(f"cleaned_pickles/{BOOK_FILENAME}")

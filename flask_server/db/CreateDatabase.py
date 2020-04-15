@@ -18,7 +18,7 @@ conn = sqlite3.connect(db_filename)
 c = conn.cursor()
 
 create_tables_string = """
-CREATE TABLE books (date text, id text, title text, author text, json text)
+CREATE TABLE books (date text, id text, title text, author text, json text, difficulty int)
 """
 
 print('creating table(s)')
