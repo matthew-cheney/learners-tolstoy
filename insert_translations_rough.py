@@ -65,4 +65,4 @@ warnings.filterwarnings("ignore")
 
 BOOK_FILENAME = 'war_and_peace_rough.txt'
 ti = TranslationInserter()
-ti.insert_translations(f"cleaned_pickles/{BOOK_FILENAME}")
+ti.insert_translations(f"cleaned_json/{BOOK_FILENAME}")

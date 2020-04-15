@@ -56,7 +56,7 @@ class TranslationInserter:
 
         new_book_json = book_to_json(book)
         print('writing new book with translations to file')
-        with open(f'cleaned_pickles/{BOOK_FILENAME}_book_with_translations.json', 'wb') as f:
+        with open(f'cleaned_json/{BOOK_FILENAME}_book_with_translations.json', 'wb') as f:
             f.write(new_book_json)
 
     def get_word_frequency(self, word):
@@ -68,7 +68,7 @@ class TranslationInserter:
 
 def insert_translations_outer(BOOK_FILENAME):
     ti = TranslationInserter()
-    ti.insert_translations(f"cleaned_pickles/{BOOK_FILENAME}_book.json", BOOK_FILENAME)
+    ti.insert_translations(f"cleaned_json/{BOOK_FILENAME}_book.json", BOOK_FILENAME)
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ DB_FILENAME = 'flask_server/db/bookshelf.db'
 
 def insert_book_into_db(BOOK_FILENAME):
 
-    with open(f'cleaned_pickles/{BOOK_FILENAME}_book_with_translations.json', 'r') as f:
+    with open(f'cleaned_json/{BOOK_FILENAME}_book_with_translations.json', 'r') as f:
         raw_text = f.read()
 
     book = json_to_book(raw_text)

@@ -161,7 +161,7 @@ def markup_to_json(BOOK_FILENAME):
 
     json_dict = json.dumps(book_dict, ensure_ascii=False).encode('utf-8')
 
-    with open(f'cleaned_pickles/{BOOK_FILENAME}_book.json', 'wb') as f:
+    with open(f'cleaned_json/{BOOK_FILENAME}_book.json', 'wb') as f:
         f.write(json_dict)
 
     print(f'{footnotes_caught} footnotes caught')
